@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verification</title>
+  <style>
+ body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa; /* Light gray background */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #343a40; /* Dark gray header background */
+    color: #ffffff; /* White text */
+    padding: 15px 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+ul {
+    list-style: none;
+    display: flex;
+}
+
+li {
+    margin: 0 15px;
+}
+
+a {
+    text-decoration: none;
+    color: #ffffff; /* White text for navigation links */
+}
+
+.container {
+    background-color: #ffffff; /* White container background */
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+#verification-form {
+    text-align: center;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+
+input, button {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    border: 1px solid #ced4da; /* Light gray border */
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+input[type="file"] {
+    border: none; /* Remove border for file input */
+}
+
+button {
+    background-color: #007bff; /* Blue submit button */
+    color: #ffffff; /* White text */
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 18px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+footer {
+    background-color: #343a40; /* Dark gray footer background */
+    color: #ffffff; /* White text */
+    text-align: center;
+    padding: 15px 0;
+    margin-top: auto;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+        <div class="logo">Document Verification</div>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            
+        </ul>
+    </nav>
+</header>
+
+<div class="background-image">
+  <div class="container">
+      <section id="verification-form">
+          <h1>Document Verification</h1>
+          <form id="userForm">
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" required>
+            
+              <label for="docType">Documentation Type:</label>
+  <select id="docType" name="docType" required>
+    <option value="" disabled selected>Choose the certificate type</option>
+    <option value="10th">10th</option>
+    <option value="12th">12th</option>
+  </select>
+            
+              <label for="image">Document:</label>
+              <input type="file" id="image" name="image" accept="image/*" required>
+            
+              <input type="button" value="Submit" onclick="sendData()">
+          </form>
+      </section>
+  </div>
+</div>
+<!-- <form id="userForm">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" placeholder="Enter the Name" required>
+
+  <label for="docType">Documentation Type:</label>
+  <select id="docType" name="docType" required>
+    <option value="" disabled selected>Choose the certificate type</option>
+    <option value="10th">10th</option>
+    <option value="12th">12th</option>
+  </select>
+
+  <label for="image">Image:</label>
+  <input type="file" id="image" name="image" accept="image/*" required>
+
+  <input type="button" value="Submit" onclick="sendData()">
+</form> -->
+<footer>
+  <p>&copy; 2024 Document Verification</p>
+</footer>
+
+<script>
+  function sendData() {
+    const form = document.getElementById('userForm');
+    const formData = new FormData(form);
+
+    fetch('http://localhost:3001/saveData', {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+  }
+</script>
+
+</body>
+</html>
