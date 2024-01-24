@@ -1,47 +1,49 @@
 const express = require('express');
 const multer = require('multer');
-const fs = require('fs');
 const path = require('path');
-const cors = require('cors');
+const fs = require('fs');
+
 const app = express();
-const port = 3001;
+const port = 3000;
 
-app.use(cors());
-app.use(express.static('public'));
-app.use(express.json());
-
+// Set up Multer for handling file uploads
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Save files in the "uploads" directory
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, `${file.fieldname}${ext}`);
+  destination: 'uploads', // Use forward slashes
+  filename: (req, file, callback) => {
+    callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
+// Serve HTML form
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Use consistent endpoint names
-app.post('/saveData', upload.single('image'), (req, res) => {
-  const formData = req.body;
+// Handle form submission
+app.post('/submit', upload.single('documentImage'), (req, res) => {
+  // Generate JSON file with the path
+  const jsonPath = { path: req.file.path };
 
-  // Process the form data and generate JSON
-  const jsonData = {
-    path: req.file ? req.file.filename : null
-    // Include other form fields as needed
-  };
+  // Write JSON data to path.json file
+  fs.writeFileSync('C:/Users/verne/Desktop/fake set up/path.json', JSON.stringify(jsonPath, null, 2));
 
-  // Save the JSON to a file
-  fs.writeFileSync('path.json', JSON.stringify(jsonData, null, 2));
+  // Read existing verdict.json file
+  fs.readFile('C:/Users/verne/Desktop/fake set up/verdict.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Error reading verdict.json:', err);
+      return res.status(500).send('Internal Server Error');
+    }
 
-  res.json({ message: 'JSON file generated successfully' });
+    // Parse the existing verdict data
+    const verdictData = JSON.parse(data);
+
+    // Send the verdict data to the client
+    res.status(200).json(verdictData);
+  });
 });
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });

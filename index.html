@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Uploader</title>
+</head>
+<body>
+  <form action="/submit" method="post" enctype="multipart/form-data" onsubmit="submitForm(event)">
+    <label for="documentType">Document Type:</label>
+    <select id="documentType" name="documentType">
+      <option value="10th">10th</option>
+      <option value="12th">12th</option>
+    </select>
+    <br>
+    <label for="documentImage">Document Image:</label>
+    <input type="file" id="documentImage" name="documentImage" accept="image/*">
+    <br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    function submitForm(event) {
+      event.preventDefault();
+      const form = event.target;
+
+      // Submit the form using fetch
+      fetch(form.action, {
+        method: form.method,
+        body: new FormData(form),
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Display the result on the webpage
+        if(data.verdict!= true && data.verdict!= false){
+        const resultElement = document.getElementById('result');
+        resultElement.textContent = `Document is Pending`;
+        }
+        else {
+          const resultElement = document.getElementById('result');
+        resultElement.textContent = `Document is ${data.verdict ? 'authentic' : 'forged'}`;
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+</body>
+</html>
